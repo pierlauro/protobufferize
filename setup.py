@@ -9,8 +9,8 @@ setup(
 	author_email="foss@pstux.dev",
 
 	description='Compile protobuffers at package build time',
-	long_description=open('README.rst').read(),
-	url='https://github.com/pierlauro/protonize',
+	long_description=open('README.md').read(),
+	url='https://github.com/pierlauro/protobize',
 
 	py_modules=['protobize'],
 	entry_points = {

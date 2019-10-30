@@ -3,3 +3,5 @@
 __pycache__/
 protobize.egg-info/
 protobize.pyc
+build
+dist

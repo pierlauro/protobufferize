@@ -9,14 +9,18 @@ import xmltodict
 
 from io import BytesIO
 from zipfile import ZipFile
-import urllib.request
+from urllib import request
 
 class ProtobizeConfiguration():
 	"""
 	Configuration for protoc
 	"""
 	def __init__(self):
-		config_file = os.environ['protobize_conf'] or 'protobize.xml'
+		try:
+			config_file = os.environ['protobize_conf']
+		except KeyError:
+			config_file = 'protobize.xml'
+
 		try:
 			with open(config_file) as fd:
 				self.conf = dict(xmltodict.parse(fd.read())['ProtobizeConfiguration'])
@@ -59,7 +63,7 @@ class CompileProtoBuffers(build_py):
 		github_protoc_release = 'https://github.com/protocolbuffers/protobuf/releases/download/v3.10.1/protoc-3.10.1-' + os_arch + '.zip'
 
 		# Download and unzip protoc binary
-		url = urllib.request.urlopen(github_protoc_release)
+		url = request.urlopen(github_protoc_release)
 		zf = ZipFile(BytesIO(url.read()))
 		zf.extract(binary_relative_path, protobize_path)
 

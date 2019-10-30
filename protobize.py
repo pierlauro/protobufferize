@@ -30,10 +30,10 @@ class ProtobizeConfiguration():
 			self.conf = dict()
 
 	def get_proto_source_root(self):
-		return self.conf['protoSourceRoot'] or 'src/main/proto'
+		return self.conf['protoSourceRoot'] or 'output'
 
 	def get_output_directory(self):
-		return self.conf['outputDirectory'] or 'generated-sources/protobuf/python'
+		return self.conf['outputDirectory'] or 'protos'
 
 	def get_clear_output_directory(self):
 		if self.conf['clearOutputDirectory']:

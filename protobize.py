@@ -1,6 +1,5 @@
 import distro
-from distutils.spawn import find_executable
-from setuptools.command.build_py import build_py
+import errno
 import platform
 import os
 import shutil
@@ -8,9 +7,11 @@ import stat
 import subprocess
 import xmltodict
 
+from distutils.spawn import find_executable
 from io import BytesIO
-from zipfile import ZipFile
+from setuptools.command.build_py import build_py
 from urllib import request
+from zipfile import ZipFile
 
 class ProtobizeConfiguration():
 	"""
@@ -105,7 +106,11 @@ class CompileProtoBuffers(build_py):
 		if self.conf.get_clear_output_directory():
 			shutil.rmtree(dst, ignore_errors=True)
 
-		os.mkdir(dst, exist_ok=True)
+		try:
+			os.mkdir(dst)
+		except OSError as exc:
+			if exc.errno != errno.EEXIST or not os.path.isdir(dst):
+				raise
 
 		for path, subdirs, files in os.walk(src):
 			for filename in files:

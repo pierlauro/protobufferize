@@ -34,10 +34,6 @@ def test_download_protoc():
 	stdout = subprocess.getoutput(binary + ' --version')
 	assert stdout.startswith('libprotoc ')
 
-def test_run():
-	cpb = CompileProtoBuffers()
-	cpb.run()
-
 def test_wrong_env_configuration():
 	""" Not existing configuration file """
 	try:
@@ -61,3 +57,8 @@ def test_no_env_configuration():
 	del os.environ['protobize_conf']
 	pc = ProtobizeConfiguration()
 	assert len(pc.conf) > 0
+
+def test_run():
+	cpb = CompileProtoBuffers()
+	cpb.run()
+	assert os.path.exists('test_data/output/dir/addressbook_pb2.py')

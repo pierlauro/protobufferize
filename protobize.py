@@ -5,6 +5,7 @@ import platform
 import os
 import stat
 import subprocess
+import xmltodict
 
 from io import BytesIO
 from zipfile import ZipFile
@@ -15,12 +16,25 @@ class ProtobizeConfiguration():
 	Configuration for protoc
 	"""
 	def __init__(self):
-		pass
+		config_file = os.environ['protobize_conf'] or 'protobize.xml'
+		try:
+			with open(config_file) as fd:
+				self.conf = dict(xmltodict.parse(fd.read())['ProtobizeConfiguration'])
+		except FileNotFoundError:
+			self.conf = dict()
+
+	def get_proto_source_root(self):
+		return self.conf['protoSourceRoot'] or 'src/main/proto'
+
+	def get_output_directory(self):
+		return self.conf['outputDirectory'] or 'generated-sources/protobuf/python'
 
 class CompileProtoBuffers(build_py):
 	"""
 	Proto files compiler
 	"""
+
+	## TODO remove init
 	def __init__(self):
 		pass
 
@@ -73,4 +87,15 @@ class CompileProtoBuffers(build_py):
 		- Locally search protoc binary or - if not found - download it.
 		- Compile proto files with parameters specified in Configuration.
 		"""
-		pass
+		self.conf = ProtobizeConfiguration()
+		src = self.conf.get_proto_source_root()
+		dst = self.conf.get_output_directory()
+		for path, subdirs, files in os.walk(src):
+			for filename in files:
+				if filename.endswith('.proto'):
+					subprocess.check_call([
+						self.find_protoc(),
+						'-I=' + src,
+						'--python_out=' + dst,
+						os.path.join(path, filename)
+					])

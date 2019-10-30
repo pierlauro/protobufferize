@@ -3,6 +3,7 @@ from distutils.spawn import find_executable
 from setuptools.command.build_py import build_py
 import platform
 import os
+import shutil
 import stat
 import subprocess
 import xmltodict
@@ -32,6 +33,12 @@ class ProtobizeConfiguration():
 
 	def get_output_directory(self):
 		return self.conf['outputDirectory'] or 'generated-sources/protobuf/python'
+
+	def get_clear_output_directory(self):
+		if self.conf['clearOutputDirectory']:
+			return self.conf['clearOutputDirectory'].lower() == 'true'
+		return False
+
 
 class CompileProtoBuffers(build_py):
 	"""
@@ -94,6 +101,12 @@ class CompileProtoBuffers(build_py):
 		self.conf = ProtobizeConfiguration()
 		src = self.conf.get_proto_source_root()
 		dst = self.conf.get_output_directory()
+
+		if self.conf.get_clear_output_directory():
+			shutil.rmtree(dst, ignore_errors=True)
+
+		os.mkdir(dst, exist_ok=True)
+
 		for path, subdirs, files in os.walk(src):
 			for filename in files:
 				if filename.endswith('.proto'):

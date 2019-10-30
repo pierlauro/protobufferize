@@ -45,11 +45,6 @@ class CompileProtoBuffers(build_py):
 	"""
 	Proto files compiler
 	"""
-
-	## TODO remove init
-	def __init__(self):
-		pass
-
 	binary_name = 'protoc'
 
 	def download_protoc(self):

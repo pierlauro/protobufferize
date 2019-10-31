@@ -19,9 +19,9 @@ class ProtobizeConfiguration():
 	"""
 	def __init__(self):
 		try:
-			config_file = os.environ['protobize_conf']
+			config_file = os.environ['protobufferize_conf']
 		except KeyError:
-			config_file = 'protobize.xml'
+			config_file = 'protobufferize.xml'
 
 		try:
 			with open(config_file) as fd:
@@ -52,8 +52,8 @@ class CompileProtoBuffers(build_py):
 		Download protoc binary and return its absolute path
 		"""
 		binary_relative_path = 'bin/' + self.binary_name
-		protobize_path = '/tmp/.protobize'
-		binary_absolute_path = protobize_path + '/' + binary_relative_path
+		protobufferize_path = '/tmp/.protobufferize'
+		binary_absolute_path = protobufferize_path + '/' + binary_relative_path
 
 		# Build download URI based on os and architecture
 		if distro.linux_distribution()[0]:
@@ -68,7 +68,7 @@ class CompileProtoBuffers(build_py):
 		# Download and unzip protoc binary
 		url = request.urlopen(github_protoc_release)
 		zf = ZipFile(BytesIO(url.read()))
-		zf.extract(binary_relative_path, protobize_path)
+		zf.extract(binary_relative_path, protobufferize_path)
 
 		# Give execution permissions
 		st_mode = os.stat(binary_absolute_path).st_mode
@@ -90,7 +90,7 @@ class CompileProtoBuffers(build_py):
 
 	def run(self):
 		"""
-		- Load protobize configuration.
+		- Load protobufferize configuration.
 		- Locally search protoc binary or - if not found - download it.
 		- Compile proto files with parameters specified in Configuration.
 		"""

@@ -1,7 +1,7 @@
 .pytest_cache/
 .tox/
 __pycache__/
-protobize.egg-info/
-protobize.pyc
+*.egg-info/
+*.pyc
 build
 dist

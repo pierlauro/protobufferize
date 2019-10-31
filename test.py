@@ -5,7 +5,7 @@ import tempfile
 
 from mock import patch
 from pathlib import Path
-from protobufferize import CompileProtoBuffers, ProtobizeConfiguration
+from protobufferize import CompileProtoBuffers, ProtobufferizeConfiguration
 
 def test_find_protoc_local():
 	PATH = os.environ['PATH']
@@ -42,7 +42,7 @@ def test_wrong_env_configuration():
 	""" Not existing configuration file """
 	try:
 		os.environ['protobufferize_conf'] = '__notexist__.xml'
-		pc = ProtobizeConfiguration()
+		pc = ProtobufferizeConfiguration()
 		assert len(pc.conf) == 0
 	finally:
 		os.environ['protobufferize_conf'] = ''
@@ -51,7 +51,7 @@ def test_env_configuration():
 	""" Use provided xml file """
 	try:
 		os.environ['protobufferize_conf'] = 'protobufferize.xml'
-		pc = ProtobizeConfiguration()
+		pc = ProtobufferizeConfiguration()
 		assert len(pc.conf) > 0
 	finally:
 		os.environ['protobufferize_conf'] = ''
@@ -59,7 +59,7 @@ def test_env_configuration():
 def test_no_env_configuration():
 	""" Use default protobufferize.xml """
 	del os.environ['protobufferize_conf']
-	pc = ProtobizeConfiguration()
+	pc = ProtobufferizeConfiguration()
 	assert len(pc.conf) > 0
 
 def test_run():

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ProtobizeConfiguration>
+<ProtobufferizeConfiguration>
 	<clearOutputDirectory>false</clearOutputDirectory>
 	<outputDirectory>test_data/output</outputDirectory>
 	<protoSourceRoot>test_data/protos</protoSourceRoot>
-</ProtobizeConfiguration>
+</ProtobufferizeConfiguration>

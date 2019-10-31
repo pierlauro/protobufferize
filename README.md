@@ -17,11 +17,11 @@ Available configuration parameters:
 XML configuration example:
 
 ```xml
-  <ProtobizeConfiguration>
+  <ProtobufferizeConfiguration>
     <clearOutputDirectory>false</clearOutputDirectory>
     <outputDirectory>test_data/output</outputDirectory>
     <protoSourceRoot>test_data/protos</protoSourceRoot>
-  </ProtobizeConfiguration>
+  </ProtobufferizeConfiguration>
 ```
 
 A xml configuration file named `protobufferize.xml` should be put in the python's project root folder. 

@@ -13,10 +13,13 @@ from setuptools.command.build_py import build_py
 from urllib import request
 from zipfile import ZipFile
 
-class ProtobizeConfiguration():
+class ProtobufferizeConfiguration():
 	"""
 	Configuration for protoc
 	"""
+
+	default_version = '3.10.1'
+
 	def __init__(self):
 		try:
 			config_file = os.environ['protobufferize_conf']
@@ -25,7 +28,7 @@ class ProtobizeConfiguration():
 
 		try:
 			with open(config_file) as fd:
-				self.conf = dict(xmltodict.parse(fd.read())['ProtobizeConfiguration'])
+				self.conf = dict(xmltodict.parse(fd.read())['ProtobufferizeConfiguration'])
 		except FileNotFoundError:
 			self.conf = dict()
 
@@ -40,6 +43,8 @@ class ProtobizeConfiguration():
 			return self.conf['clearOutputDirectory'].lower() == 'true'
 		return False
 
+	def get_version(self):
+		return self.conf['protocVersion'] or self.default_version
 
 class CompileProtoBuffers(build_py):
 	"""
@@ -47,7 +52,7 @@ class CompileProtoBuffers(build_py):
 	"""
 	binary_name = 'protoc'
 
-	def download_protoc(self):
+	def download_protoc(self, version=ProtobufferizeConfiguration.default_version):
 		"""
 		Download protoc binary and return its absolute path
 		"""
@@ -63,7 +68,7 @@ class CompileProtoBuffers(build_py):
 		elif platform.win32_ver()[0]:
 			operative_system = 'win'
 		os_arch = operative_system + '-' + platform.machine()
-		github_protoc_release = 'https://github.com/protocolbuffers/protobuf/releases/download/v3.10.1/protoc-3.10.1-' + os_arch + '.zip'
+		github_protoc_release = 'https://github.com/protocolbuffers/protobuf/releases/download/v' + version + '/protoc-' + version + '-' + os_arch + '.zip'
 
 		# Download and unzip protoc binary
 		url = request.urlopen(github_protoc_release)
@@ -94,7 +99,7 @@ class CompileProtoBuffers(build_py):
 		- Locally search protoc binary or - if not found - download it.
 		- Compile proto files with parameters specified in Configuration.
 		"""
-		self.conf = ProtobizeConfiguration()
+		self.conf = ProtobufferizeConfiguration()
 		src = self.conf.get_proto_source_root()
 		dst = self.conf.get_output_directory()
 

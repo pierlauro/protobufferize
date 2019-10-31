@@ -1,4 +1,5 @@
 import os
+import pytest
 import shutil
 import subprocess
 import tempfile
@@ -6,6 +7,9 @@ import tempfile
 from mock import patch
 from pathlib import Path
 from protobufferize import CompileProtoBuffers, ProtobufferizeConfiguration
+
+pytest.config_env = ProtobufferizeConfiguration.config_env
+pytest.example_config_file = 'config-example/protobufferize.xml'
 
 def test_find_protoc_local():
 	PATH = os.environ['PATH']
@@ -41,28 +45,33 @@ def test_download_protoc():
 def test_wrong_env_configuration():
 	""" Not existing configuration file """
 	try:
-		os.environ['protobufferize_conf'] = '__notexist__.xml'
+		os.environ[pytest.config_env] = '__notexist__.xml'
 		pc = ProtobufferizeConfiguration()
 		assert len(pc.conf) == 0
 	finally:
-		os.environ['protobufferize_conf'] = ''
+		os.environ[pytest.config_env] = ''
 
 def test_env_configuration():
 	""" Use provided xml file """
 	try:
-		os.environ['protobufferize_conf'] = 'protobufferize.xml'
+		os.environ[pytest.config_env] = pytest.example_config_file
 		pc = ProtobufferizeConfiguration()
 		assert len(pc.conf) > 0
 	finally:
-		os.environ['protobufferize_conf'] = ''
+		os.environ[pytest.config_env] = ''
 
 def test_no_env_configuration():
-	""" Use default protobufferize.xml """
-	del os.environ['protobufferize_conf']
-	pc = ProtobufferizeConfiguration()
-	assert len(pc.conf) > 0
+	""" Use default xml configuration location """
+	del os.environ[pytest.config_env]
+	shutil.copyfile(pytest.example_config_file, ProtobufferizeConfiguration.default_config_file)
+	try:
+		pc = ProtobufferizeConfiguration()
+		assert len(pc.conf) > 0
+	finally:
+		os.remove(ProtobufferizeConfiguration.default_config_file)
 
 def test_run():
+	os.environ[pytest.config_env] = 'config-example/protobufferize.xml'
 	with patch.object(CompileProtoBuffers, "__init__", lambda x, y: None):
 		cpb = CompileProtoBuffers(None)
 		cpb.run()

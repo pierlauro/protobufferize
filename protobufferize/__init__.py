@@ -21,12 +21,14 @@ class ProtobufferizeConfiguration():
 	default_version = '3.10.1'
 	default_proto_source_root = 'protos'
 	default_output_directory = 'output'
+	default_config_file = 'protobufferize.xml'
+	config_env = 'protobufferize_conf'
 
 	def __init__(self):
 		try:
-			config_file = os.environ['protobufferize_conf']
+			config_file = os.environ[self.config_env]
 		except KeyError:
-			config_file = 'protobufferize.xml'
+			config_file = self.default_config_file
 
 		try:
 			with open(config_file) as fd:

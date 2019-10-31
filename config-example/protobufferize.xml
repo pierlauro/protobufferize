@@ -3,4 +3,5 @@
 	<clearOutputDirectory>false</clearOutputDirectory>
 	<outputDirectory>test_data/output</outputDirectory>
 	<protoSourceRoot>test_data/protos</protoSourceRoot>
+	<protocVersion>3.10.1</protocVersion>
 </ProtobufferizeConfiguration>

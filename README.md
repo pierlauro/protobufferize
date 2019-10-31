@@ -13,15 +13,17 @@ Available configuration parameters:
 - `clearOutputDirectory` [default: false]
 - `outputDirectory` [default: ./output]
 - `protoSourceRoot` [default: ./protos]
+- `protoVersion` [default: 3.10.1]
 
 XML configuration example:
 
 ```xml
-  <ProtobufferizeConfiguration>
-    <clearOutputDirectory>false</clearOutputDirectory>
-    <outputDirectory>test_data/output</outputDirectory>
-    <protoSourceRoot>test_data/protos</protoSourceRoot>
-  </ProtobufferizeConfiguration>
+<ProtobufferizeConfiguration>
+	<clearOutputDirectory>false</clearOutputDirectory>
+	<outputDirectory>test_data/output</outputDirectory>
+	<protoSourceRoot>test_data/protos</protoSourceRoot>
+	<protoVersion>3.10.1</protoVersion>
+</ProtobufferizeConfiguration>
 ```
 
 A xml configuration file named `protobufferize.xml` should be put in the python's project root folder. 

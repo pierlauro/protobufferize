@@ -1,8 +1,8 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
 	name='protobufferize',
-	version='1.0-alpha',
+	version='1.0-dev0',
 	license = 'GNU Affero General Public License v3.0',
 
 	author="pierlauro",
@@ -29,6 +29,8 @@ setup(
 	python_requires='>=3.6',
 
 	keywords = 'protocolbuffer proto protobuf grpc setuptools protobufferize',
+
+	packages = find_packages(),
 
 	py_modules=['protobufferize'],
 	entry_points = {

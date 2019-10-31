@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
 	name='protobufferize',
-	version='1.0-dev0',
+	version='1.0',
 	license = 'GNU Affero General Public License v3.0',
 
 	author="pierlauro",

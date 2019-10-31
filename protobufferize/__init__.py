@@ -19,6 +19,8 @@ class ProtobufferizeConfiguration():
 	"""
 
 	default_version = '3.10.1'
+	default_proto_source_root = 'protos'
+	default_output_directory = 'output'
 
 	def __init__(self):
 		try:
@@ -33,18 +35,18 @@ class ProtobufferizeConfiguration():
 			self.conf = dict()
 
 	def get_proto_source_root(self):
-		return self.conf['protoSourceRoot'] or 'output'
+		return self.conf.get('protoSourceRoot') or self.default_proto_source_root
 
 	def get_output_directory(self):
-		return self.conf['outputDirectory'] or 'protos'
+		return self.conf.get('outputDirectory') or self.default_output_directory
 
 	def get_clear_output_directory(self):
 		if self.conf['clearOutputDirectory']:
-			return self.conf['clearOutputDirectory'].lower() == 'true'
+			return self.conf.get('clearOutputDirectory').lower() == 'true'
 		return False
 
 	def get_version(self):
-		return self.conf['protocVersion'] or self.default_version
+		return self.conf.get('protocVersion') or self.default_version
 
 class CompileProtoBuffers(build_py):
 	"""
@@ -52,7 +54,7 @@ class CompileProtoBuffers(build_py):
 	"""
 	binary_name = 'protoc'
 
-	def download_protoc(self, version=ProtobufferizeConfiguration.default_version):
+	def download_protoc(self, version):
 		"""
 		Download protoc binary and return its absolute path
 		"""
@@ -87,11 +89,14 @@ class CompileProtoBuffers(build_py):
 		"""
 		return find_executable(self.binary_name)
 
-	def get_protoc(self):
+	def get_protoc(self, version):
 		"""
 		Get the protoc binary locally or remotely and return its absolute path
 		"""
-		return self.find_protoc() or self.download_protoc()
+		binary = self.find_protoc()
+		if binary and version == subprocess.getoutput(binary + ' --version'):
+			return binary
+		return self.download_protoc(version)
 
 	def run(self):
 		"""
@@ -102,6 +107,7 @@ class CompileProtoBuffers(build_py):
 		self.conf = ProtobufferizeConfiguration()
 		src = self.conf.get_proto_source_root()
 		dst = self.conf.get_output_directory()
+		version = self.conf.get_version()
 
 		if self.conf.get_clear_output_directory():
 			shutil.rmtree(dst, ignore_errors=True)
@@ -116,7 +122,7 @@ class CompileProtoBuffers(build_py):
 			for filename in files:
 				if filename.endswith('.proto'):
 					subprocess.check_call([
-						self.find_protoc(),
+						self.get_protoc(version),
 						'-I=' + src,
 						'--python_out=' + dst,
 						os.path.join(path, filename)

@@ -33,7 +33,7 @@ def test_find_protoc_not_local():
 def test_download_protoc():
 	with patch.object(CompileProtoBuffers, "__init__", lambda x, y: None):
 		cpb = CompileProtoBuffers(None)
-		binary = cpb.download_protoc()
+		binary = cpb.download_protoc(ProtobufferizeConfiguration.default_version)
 		assert os.path.isfile(binary)
 		stdout = subprocess.getoutput(binary + ' --version')
 		assert stdout.startswith('libprotoc ')

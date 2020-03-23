@@ -42,6 +42,9 @@ class ProtobufferizeConfiguration():
 	def get_output_directory(self):
 		return self.conf.get('outputDirectory') or self.default_output_directory
 
+	def get_grpc_output_directory(self):
+		return self.conf.get('grpcOutputDirectory') or None
+
 	def get_clear_output_directory(self):
 		if self.conf['clearOutputDirectory']:
 			return self.conf.get('clearOutputDirectory').lower() == 'true'
@@ -109,6 +112,7 @@ class CompileProtoBuffers(build_py):
 		self.conf = ProtobufferizeConfiguration()
 		src = self.conf.get_proto_source_root()
 		dst = self.conf.get_output_directory()
+		grpc = self.conf.get_grpc_output_directory()
 		version = self.conf.get_version()
 
 		if self.conf.get_clear_output_directory():
@@ -120,11 +124,12 @@ class CompileProtoBuffers(build_py):
 			if exc.errno != errno.EEXIST or not os.path.isdir(dst):
 				raise
 
+		command = [self.get_protoc(version)] if grpc is None else ['python3', '-m', 'grpc.tools.protoc', '--grpc_python_out=' + grpc]
+
 		for path, subdirs, files in os.walk(src):
 			for filename in files:
 				if filename.endswith('.proto'):
-					subprocess.check_call([
-						self.get_protoc(version),
+					subprocess.check_call( command + [
 						'-I=' + src,
 						'--python_out=' + dst,
 						os.path.join(path, filename)

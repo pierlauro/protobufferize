@@ -26,6 +26,13 @@ setup(
 		'Programming Language :: Python :: 3.7'
 	],
 
+	install_requires=[
+    	"distro",
+		"grpc-tools",
+		"mock",
+		"xmltodict",
+	],
+
 	python_requires='>=3.6',
 
 	keywords = 'protocolbuffer proto protobuf grpc setuptools protobufferize',

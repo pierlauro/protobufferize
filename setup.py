@@ -28,7 +28,7 @@ setup(
 
 	install_requires=[
     	"distro",
-		"grpc-tools",
+		"grpcio-tools",
 		"mock",
 		"xmltodict",
 	],

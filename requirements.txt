@@ -1,4 +1,4 @@
 distro
-grpc-tools
+grpcio-tools
 mock
 xmltodict
